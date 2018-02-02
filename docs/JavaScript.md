@@ -96,18 +96,19 @@ const my_ponit = new Ponit(1,2);
 my_point.toString();//(x: 1, y: 2)
 
 //async函数的使用，便于异步操作
+const setAsync = function(func) {
+  setTimeout(func,1000)
+}
 const asyncFunc = async function() {
-  const a = await setTimeout(function(){
-    return 123
-  },1000);
-  const b = await setTimeout(function(){
-    return 321
-  },2000);
+  let a = await new Promise((resolve,reject)=>{
+    setTimeout(function() {
+      resolve(100);
+    },2000);
+  });
 
   console.log(a);
-  console.log(b);
 };
-asyncFunc(); //1,2
+asyncFunc(); //100
 
 //修饰器的使用
 @testDecorator
@@ -149,7 +150,6 @@ CommonJS的原因在于服务端所有的模块都是存在于硬盘中的，加
 因此需要采用异步加载，AMD规范中使用define来定义一个模块，使用require方法来加载一个模块，现在ES6也推出了标准的模块
 加载方案，通过exports和require来导出和导入模块。
 ```javascript
-//TODO:模块加载的简单实现
 
 //定义主模块
 const MyModules = (function Manager() {
@@ -254,7 +254,38 @@ AMD是解决JS模块化的规范，实现这样的一个模块加载器的关键
 ### 9.js如何判断网页中图片加载成功或者失败
 使用onload事件运行加载成功，使用onerror事件判断失败
 ```javascript
-//TODO: 实现图片的懒加载
+//TODO: 实现图片的预加载
+function loadImg(url, callback) {
+  let img = new Image();
+  img.src = url
+  if(img.complete) {
+    getImg(img)
+  } else {
+    img.onload = function() {
+      getImg(img)
+    }
+  }
+}
+
+//用async函数实现
+async function loadImg(url) {
+  let img = new Image()
+  img.src = url
+  await new Promise((resolve, reject)=>{
+    if(img.complete){
+      resolve(img)
+    } else {
+      img.onload = function() {
+        resolve(img)
+      }
+      img.onerror = function() {
+        reject('image load error')
+      }
+    }
+  })
+}
+
+
 
 ```
 
