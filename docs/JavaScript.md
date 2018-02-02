@@ -128,6 +128,19 @@ MyClass.isTestable //true
 都有一个__proto__属性指向这个prototype对象，我们可以将这个叫做隐式原型，我们在使用一个实例的方法的时候，会先检查
 这个实例中是否有这个方法，没有则会继续向上查找这个prototype对象是否有这个方法，刚刚我们说到prototype是一个对象，
 那么也即是说这个是一个对象的实例，那么这个对象同样也会有一个__proto__属性指向对象的prototype对象。
+```javascript
+//prototype实现面向对象编程
+function Animal(name, age){
+  this.name = name;
+  this.age = age;
+};
+
+Animal.prototype.display_it = function() {
+  console.log(this.name, this.age);
+};
+const dog = new Animal("dog",12);
+dog.display_it();//"dog",12
+```
 
 ### 5.对js模块化的理解
 在ES6出现之前，js没有标准的模块化概念，这也就造成了js多人写作开发容易造成全局污染的情况，以前我们可能会采用立即执行
