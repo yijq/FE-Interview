@@ -38,12 +38,89 @@ xhr.onreadystatechange = function() {
 }
 ```
 
+```javascript
+var xhr = new XMLHttpRequest();
+xhr.open('get','api.js', true);
+xhr.send(null)
+xhr.onreadystatechange = function() {
+  if(xhr.readyState == 4) P{
+    if(xhr.status == 200) {
+      console.log(xhr.responseText)
+    }
+  }
+}
+
+
+```
+
 ### 3.简要介绍ES6
 ES6在变量的声明和定义方面增加了let、const声明变量，有局部变量的概念，赋值中有比较吸引人的结构赋值，同时ES6对字符串、
 数组、正则、对象、函数等拓展了一些方法，如字符串方面的模板字符串、函数方面的默认参数、对象方面属性的简洁表达方式，ES6也
 引入了新的数据类型symbol，新的数据结构set和map,symbol可以通过typeof检测出来，为解决异步回调问题，引入了promise和
 generator，还有最为吸引人了实现Class和模块，通过Class可以更好的面向对象编程，使用模块加载方便模块化编程，当然考虑到
-浏览器兼容性，我们在实际开发中需要使用babel进行编译。
+浏览器兼容性，我们在实际开发中需要使用babel进行编译。补充：还增加了acync与await的语法，方便异步回调；修饰器，用于改变类的行为。
+
+
+```javascript
+let a = 123;//let赋值
+const b = 123;//const赋值
+
+aObj = {
+  x: 213,
+  y: 321
+};
+const {x, y} = aObj;//对象的结构赋值
+x//213
+y//321
+
+const c = Symbol();//symbol类型
+typeof d ;//"symbol"
+
+const c2 = new Map();//返回键值对的数据结构，类似对象
+const c3 = new Set();//返回无重复元素的数组的数据结构，类似数组
+typeof c2; //"object"
+typeof c3; //"object"
+
+//class关键字的使用，便于面向对象编程
+class Point{
+  constructor(x, y){
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return `(x: ${this.x}, y: ${this.y})`;
+  }
+};
+const my_ponit = new Ponit(1,2);
+my_point.toString();//(x: 1, y: 2)
+
+//async函数的使用，便于异步操作
+const asyncFunc = async function() {
+  const a = await setTimeout(function(){
+    return 123
+  },1000);
+  const b = await setTimeout(function(){
+    return 321
+  },2000);
+
+  console.log(a);
+  console.log(b);
+};
+asyncFunc(); //1,2
+
+//修饰器的使用
+@testDecorator
+class MyClass{
+  //...
+}
+
+function textDecrator(target) {
+  target.isTestable = true
+}
+MyClass.isTestable //true
+
+```
 
 ### 4.对js原型的理解
 我们知道在es6之前，js没有类和继承的概念，js是通过原型来实现继承的。在js中一个构造函数默认自带有一个prototype属性，
