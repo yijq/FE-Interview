@@ -148,6 +148,68 @@ dog.display_it();//"dog",12
 CommonJS的原因在于服务端所有的模块都是存在于硬盘中的，加载和读取几乎是不需要时间的，而浏览器端因为加载速度取决于网速，
 因此需要采用异步加载，AMD规范中使用define来定义一个模块，使用require方法来加载一个模块，现在ES6也推出了标准的模块
 加载方案，通过exports和require来导出和导入模块。
+```javascript
+//TODO:模块加载的简单实现
+
+//定义主模块
+const MyModules = (function Manager() {
+  //主模块中用于存储模块的对象
+  const modules = {};
+
+  /*
+  主模块中注册函数的方法
+  name {string} 注册函数的名称
+  deps {array} 注册函数所依赖函数的名称数组
+  impl {function} 注册函数的主题，接受deps中的函数返回的对象为参数
+  */
+  function define(name, deps, impl) {
+    //依赖的函数名的数组换为包含函数的对象数组。
+    for(let i = 0; i< deps.length; i++){
+      deps[i] = modules[deps[i]]
+    };
+    //在全局的modules上注册函数
+    modules[name] = impl.apply(null, deps);
+  }
+  //取得modules中的函数
+  function get(name) {
+    return modules[name]
+  }
+
+  return {
+    define,
+    get,
+  };
+})();
+
+//在模块中注册函数时必须返回对象形式，对象中包含注册函数的方法接口
+MyModules.define('a', [], function(){
+  function sayHello(name) {
+    console.log(`Hello ${name}`)
+    return `Hello ${name}`
+  }
+
+  return {
+    sayHello
+  };
+});
+
+//有依赖的注册函数，依赖必须已经存在于modules中
+MyModules.define('b', ['a'], function(a){
+  function greeting(name) {
+    const hello = a.sayHello(name);
+
+    return `${hello} , how are you`
+  }
+
+  return {
+    greeting
+  }
+})
+
+//调用b模块，b模块中包含a模块的依赖
+MyModules.get('b').greeting("ash");
+
+```
 
 ### 6.如何实现一个JS的AMD模块加载器
 AMD是解决JS模块化的规范，实现这样的一个模块加载器的关键在于解决每个模块依赖的解析。首先我们需要有一个模块的入口，也就是主模块，比如我们使用
@@ -191,13 +253,22 @@ AMD是解决JS模块化的规范，实现这样的一个模块加载器的关键
 
 ### 9.js如何判断网页中图片加载成功或者失败
 使用onload事件运行加载成功，使用onerror事件判断失败
+```javascript
+//TODO: 实现图片的懒加载
+
+```
 
 ### 10.递归和迭代的区别是什么，各有什么优缺点？
 程序调用自身称为递归，利用变量的原值推出新值称为迭代，递归的优点
 大问题转化为小问题，可以减少代码量，同时应为代码精简，可读性好，
 缺点就是，递归调用浪费了空间，而且递归太深容易造成堆栈的溢出。迭代的好处
 就是代码运行效率好，因为时间只因循环次数增加而增加，而且没有额外的空间开销，
-缺点就是代码不如递归简洁
+缺点就是代码不如递归简洁。补充：es6对函数进行了尾调用优化，在不引用外层函数中的变量的情况下，
+函数的调用帧只有正在执行的函数，因此优化了递归的空间开销。
+```javascript
+//TODO:函数递归与柯里化的代码示例
+
+```
 
 参考：
 
@@ -231,10 +302,19 @@ js主线程空闲与否
 getElementsByName、querySelector、querySelectorAll,对元素属性进行操作的 getAttribute、
 setAttribute、removeAttribute方法，对节点进行增删改的appendChild、insertBefore、replaceChild、removeChild、
 createElement等
+```javascript
+//TODO: 实践一下上面提到的方法
+
+```
 
 ### 14.typeof操作符返回值有哪些，对undefined、null、NaN使用这个操作符分别返回什么
 typeof的返回值有undefined、boolean、string、number、object、function、symbol。对undefined
-使用返回undefined、null使用返回object，NaN使用返回number
+使用返回undefined、null使用返回object，NaN使用返回number。补充，typeof在es6中不再是绝对安全的，是由let的“暂时性死区造成的”。
+```javascript
+//TODO: typeof的使用
+
+```
+
 
 ### 15.实现一个类型判断函数，需要鉴别出基本类型、function、null、NaN、数组、对象？
 只需要鉴别这些类型那么使用typeof即可，要鉴别null先判断双等判断是否为null，之后使用typeof判断，如果是obejct的话，再用Array.isArray判断
@@ -316,11 +396,18 @@ ES6之前的继承是通过原型来实现的，也就是每一个构造函数�
 有三个参数，第一个是事件的类型，第二个是事件的回调函数，第三个是一个表示事件是冒泡阶段还是捕获阶段捕获的布尔值，true表示捕获，false表示冒泡
 
 ### 23.介绍一下Promise，底层如何实现？
+```javascript
+//TODO: 实现promise
 
+```
 
 ### 24.如何实现懒加载？
 懒加载就是根据用户的浏览需要记载内容，也就是在用户即将浏览完当前的内容时进行继续加载内容，这种技术常常用来加载图片的时候使用。我们判断用户是否即将浏览到底部之后进行在家内容
 这时候可能会需要加载大量的内容，可以使用fragment来优化一下，因为大部分是使用滑动和滚轮来触发的，因此很有可能会不断触发，可以使用函数节流做一个优化，防止用户不断触发。
+```javascript
+//TODO: 实现简单的懒加载
+
+```
 
 ### 25.函数节流是什么？
 函数节流就是让一个函数无法在很短的时间间隔内连续调用，而是间隔一段时间执行，这在我们为元素绑定一些事件的时候经常会用到，比如我们
@@ -339,6 +426,11 @@ ES6之前的继承是通过原型来实现的，也就是每一个构造函数�
 简单分为获取类方法，获取类方法有charAt方法用来获取指定位置的字符，获取指定位置字符的unicode编码的charCodeAt方法，
 与之相反的fromCharCode方法，通过传入的unicode返回字符串。查找类方法有indexof()、lastIndexOf()、search()、match()
 方法。截取类的方法有substring、slice、substr三个方法，其他的还有replace、split、toLowerCase、toUpperCase方法。
+
+```javascript
+//TODO: 字符串操作方法的复习
+
+```
 
 ### 29.原生js字符串截取方法有哪些？有什么区别？
 js字符串截取方法有substring、slice、substr三个方法，substring和slice都是指定截取的首尾索引值，不同的是传递负值的时候
