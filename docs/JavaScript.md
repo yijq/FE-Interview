@@ -1,4 +1,4 @@
-## JavaScript部分
+ ## JavaScript部分
 ### 1.引起内存泄漏的操作有哪些
 1.全局变量引起
 
@@ -298,7 +298,34 @@ async function loadImg(url) {
 函数的调用帧只有正在执行的函数，因此优化了递归的空间开销。
 ```javascript
 //TODO:函数递归与柯里化的代码示例
+//简单的阶乘函数,递归的实现
+function factorial(n){
+  if (n === 1) return 1;
+   return n * factorial(n - 1)
+}
+factorial(5);//120
 
+//改写成尾递归的形式,尾递归改写：将递归中的每一步有一个变量记录下来，这样就可以减少
+//空间的占用，fibonacci函数可以用这个方法优化
+function factorial_tail(n, total) {
+  if( n === 1 ) return total;
+  return factorial_tail(n - 1, total * n)
+}
+factorial_tail(5, 1)//120
+
+//fibonacci
+function fibonacci(n) {
+  if( n <= 1 ) return 1;
+  return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+fibonacci(100)//电脑风扇飞起来了，堆栈溢出
+//fibonacci优化
+function fibonacci_tail(n, ac1=1, ac2=1){
+  if(n <= 1) return ac2;
+  return fibonacci_tail(n - 1, ac2, ac1 + ac2)
+}
+fibonacci_tail(100)//瞬间出结果
 ```
 
 参考：
@@ -335,14 +362,40 @@ setAttribute、removeAttribute方法，对节点进行增删改的appendChild、
 createElement等
 ```javascript
 //TODO: 实践一下上面提到的方法
+//根据id选择元素，返回节点对象
+document.getElementById('id')
 
+//根据class选择元素，返回节点对象的伪数组
+document.getElementsByClassName('class')
+
+//根据name选择元素，返回节点对象的伪数组
+document.getElementsByName('name')
+
+//根据id或class选择元素，返回第一个节点对象
+document.querySelector('class' || 'id')
+
+//根据id或class选择元素，返回节点对象的伪数组
+document.querySelectorAll('class' || 'id')
 ```
 
 ### 14.typeof操作符返回值有哪些，对undefined、null、NaN使用这个操作符分别返回什么
 typeof的返回值有undefined、boolean、string、number、object、function、symbol。对undefined
-使用返回undefined、null使用返回object，NaN使用返回number。补充，typeof在es6中不再是绝对安全的，是由let的“暂时性死区造成的”。
+使用返回undefined、null使用返回object，NaN使用返回number。补充，typeof在es6中不再是绝对安全的，是由let的“暂时性死区”造成的。
 ```javascript
 //TODO: typeof的使用
+typeof undefined
+typeof true 
+typeof 'hahaha'
+typeof 213
+typeof {}
+typeof function(){}
+typeof new Symbol()
+
+//es6之前，typeof是绝对安全的，es6及之后就不一定了。
+typeof a;//ReferenceError
+let a = 123;
+
+
 
 ```
 
