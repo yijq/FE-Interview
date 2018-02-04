@@ -395,8 +395,6 @@ typeof new Symbol()
 typeof a;//ReferenceError
 let a = 123;
 
-
-
 ```
 
 
@@ -423,10 +421,41 @@ function type(ele) {
     return typeof ele;
   }
 }
+
+//TODO: 自定义type函数
+function getType(ele){
+  if(ele === null){
+    return null;
+  } else if ( typeof ele === 'object' ) {
+    if(Array.isArray(ele)){
+      return 'array';
+    } else {
+      return typeof ele;
+    }
+  } else if(typeof ele === 'number') {
+    if(isNaN(ele)) {
+      return NaN;
+    } else {
+      return typeof ele;
+    }
+  } else {
+    return typeof ele;
+  }
+}
+
 ``` 
 
 ### 16.javascript做类型判断的方法有哪些？
 typeof、instanceof 、 Object.prototype.toString()(待续)
+```javascript
+typeof null //'object'
+typeof NaN //'number'
+
+[] instanceof Array // true
+
+Object.prototype.toString()//
+
+```
 
 ### 17.JavaScript严格模式下有哪些不同？
 + 不允许不使用var关键字去创建全局变量，抛出ReferenceError
@@ -480,8 +509,31 @@ ES6之前的继承是通过原型来实现的，也就是每一个构造函数�
 有三个参数，第一个是事件的类型，第二个是事件的回调函数，第三个是一个表示事件是冒泡阶段还是捕获阶段捕获的布尔值，true表示捕获，false表示冒泡
 
 ### 23.介绍一下Promise，底层如何实现？
+Promise是一种异步编程的解决方案。简单来说，promise是一个容器，里面包含着未来才会结束的事件，有两个特点，1，对象的状态不受外界的影响；2，一旦状态改变
+，就不会再变，任何时候都会得到这个结果。
+
 ```javascript
-//TODO: 实现promise
+//TODO: 使用promise实现fetch
+const myFetch = (url) => (new Promise(resolve, reject) => {
+  const client = new XMLHttpRequest();
+
+  client.onreadystatechange = function() {
+    if(this.readystate !== 4) {
+      return;
+    }
+    if(this.status === 200) {
+      resolve(this.response);
+    } else {
+      reject(new Error(this.statusText));
+    }
+  };
+
+  client.responseType = 'json';
+  client.setRequestHeader("Accept", "application/json");
+  client.open('GET', url);
+  client.send()
+});
+
 
 ```
 
@@ -514,12 +566,31 @@ ES6之前的继承是通过原型来实现的，也就是每一个构造函数�
 ```javascript
 //TODO: 字符串操作方法的复习
 
+const myStr = "I like Javascript, and I will learn Python, Go, Rust.";
+
+myStr.chatAt(2) // 'l'
+myStr.charCodeAt(2)//108
+String.fromCharCode(109)//'l'
+myStr.indexOf('l')//2
+myStr.lastIndexOf('l')//30
+myStr.search('l') //2
+myStr.match('l')[0] //'l'
+myStr.match(/l/g) //['l','l','l','l']
+
+myStr.replace(/will/g,"want to")//I like Javascript, and I want to learn Python, Go, Rust.
 ```
 
 ### 29.原生js字符串截取方法有哪些？有什么区别？
 js字符串截取方法有substring、slice、substr三个方法，substring和slice都是指定截取的首尾索引值，不同的是传递负值的时候
 substring会当做0来处理，而slice传入负值的规则是-1指最后一个字符，substr方法则是第一个参数是开始截取的字符串，第二个是截取的字符数量，
 和slice类似，传入负值也是从尾部算起的。
+
+```javascript
+const newStr1 = myStr.substring(2,8) //'like J'
+const newStr2 = myStr.slice(2,8) //'like J'
+const newStr3 = myStr.substr(2,8)//'like Jav'
+
+```
 
 ### 30.SVG和Canvas的区别？
 
