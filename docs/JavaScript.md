@@ -578,6 +578,7 @@ myStr.match('l')[0] //'l'
 myStr.match(/l/g) //['l','l','l','l']
 
 myStr.replace(/will/g,"want to")//I like Javascript, and I want to learn Python, Go, Rust.
+myStr.replace(/like/g,"love")
 ```
 
 ### 29.原生js字符串截取方法有哪些？有什么区别？
